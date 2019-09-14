@@ -34,18 +34,42 @@ android {
 
 
 kotlin {
-    targets {
-        final def iOSTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") \
-                              ? presets.iosArm64 : presets.iosX64
 
-        fromPreset(iOSTarget, 'iOS') {
-            binaries {
-                framework('common')
-            }
-        }
+    android()
+    // This is for iPhone emulator
+    // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
+    iosX64("ios")
 
-        fromPreset(presets.android, 'android')
-    }
+
+//    targets {
+//        jvm()
+//        android()
+//
+//        def onPhone = System.getenv('SDK_NAME')?.startsWith("iphoneos")
+//        if(onPhone){
+//            iosArm64("ios")
+//        }else{
+//            iosX64("ios")
+//        }
+
+//        iosX64("ios")
+
+//        iosX64("ios") {
+//            binaries {
+//                framework("SharedCode")
+//            }
+//
+//        }
+
+//        final def iOSTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") \
+//                              ? presets.iosArm64 : presets.iosX64
+//
+//        fromPreset(iOSTarget, 'iOS') {
+//            binaries {
+//                framework()
+//            }
+//        }
+//    }
 
     cocoapods {
         // Configure fields required by CocoaPods.
@@ -71,9 +95,13 @@ kotlin {
             // Serialize
             implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:${Versions.kotlinxSerialization}"
 
+            // Stately
+            implementation "co.touchlab:stately:${Versions.stately}"
+            implementation "co.touchlab:stately-collections:${Versions.stately}"
+
             // SQL Delight
             implementation "com.squareup.sqldelight:runtime:${Versions.sqlDelight}"
-            implementation "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelight}"
+            //implementation "com.squareup.sqldelight:coroutines-extensions:${Versions.sqlDelight}"
         }
 
         androidMain.dependencies {
@@ -99,22 +127,24 @@ kotlin {
             implementation "com.squareup.sqldelight:coroutines-extensions-jvm:${Versions.sqlDelight}"
         }
 
-        iOSMain.dependencies {
-            // Coroutines
-            implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
+        iOSMain {
+            dependencies {
+                // Coroutines
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:${Versions.kotlinCoroutines}"
 
-            // Ktor
-            implementation "io.ktor:ktor-client-ios:${Versions.ktor}"
-            implementation "io.ktor:ktor-client-core-native:${Versions.ktor}"
-            implementation "io.ktor:ktor-client-json-native:${Versions.ktor}"
-            implementation "io.ktor:ktor-client-logging-native:${Versions.ktor}"
-            implementation "io.ktor:ktor-client-serialization-native:${Versions.ktor}"
+                // Ktor
+                implementation "io.ktor:ktor-client-ios:${Versions.ktor}"
+                implementation "io.ktor:ktor-client-core-native:${Versions.ktor}"
+                implementation "io.ktor:ktor-client-json-native:${Versions.ktor}"
+                implementation "io.ktor:ktor-client-logging-native:${Versions.ktor}"
+                implementation "io.ktor:ktor-client-serialization-native:${Versions.ktor}"
 
-            // Serialize
-            implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.kotlinxSerialization}"
+                // Serialize
+                implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:${Versions.kotlinxSerialization}"
 
-            // SQL Delight
-            implementation "com.squareup.sqldelight:ios-driver:${Versions.sqlDelight}"
+                // SQL Delight
+                implementation "com.squareup.sqldelight:ios-driver:${Versions.sqlDelight}"
+            }
         }
     }
 }
